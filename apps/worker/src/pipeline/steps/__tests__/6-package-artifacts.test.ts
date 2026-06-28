@@ -8,6 +8,8 @@ const CORE_OUTPUT: CoreWorkflowOutput = {
   tests: 'import { describe, it } from "vitest"',
   dockerFile: 'FROM node:20-alpine\nWORKDIR /app',
   manifest: JSON.stringify({ name: 'Stripe', version: '1.0.0', mcpVersion: '1.0', tools: [] }),
+  packageJson: '{"name":"stripe-mcp-server","version":"1.0.0"}',
+  tsconfig: '{"compilerOptions":{"strict":true}}',
 }
 
 const CTX_STATE: GenerationContext = {

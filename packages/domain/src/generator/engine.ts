@@ -20,6 +20,8 @@ export class GeneratorEngine {
       tests: render(template.tests, vars),
       dockerFile: render(template.dockerfile, vars),
       manifest,
+      packageJson: render(template.packageJson, vars),
+      tsconfig: template.tsconfig ? render(template.tsconfig, vars) : '',
     }
   }
 }

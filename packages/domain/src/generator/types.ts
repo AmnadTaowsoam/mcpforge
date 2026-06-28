@@ -25,6 +25,8 @@ export interface TemplateSet {
   tests: string
   dockerfile: string
   manifestTemplate: string
+  packageJson: string
+  tsconfig: string
 }
 
 export interface RenderedOutput {
@@ -33,4 +35,6 @@ export interface RenderedOutput {
   tests: string
   dockerFile: string
   manifest: string
+  packageJson: string
+  tsconfig: string
 }

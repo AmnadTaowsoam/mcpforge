@@ -24,6 +24,8 @@ const VALID_OUTPUT: CoreWorkflowOutput = {
   tests: 'import { describe }',
   dockerFile: 'FROM node:20',
   manifest: JSON.stringify({ name: 'X', version: '1.0.0', mcpVersion: '1.0', tools: [] }),
+  packageJson: '{"name":"x-mcp-server","version":"1.0.0"}',
+  tsconfig: '{"compilerOptions":{"strict":true}}',
 }
 
 describe('validateOutputStep', () => {

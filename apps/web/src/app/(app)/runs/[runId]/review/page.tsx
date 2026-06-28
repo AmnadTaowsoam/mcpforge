@@ -1,5 +1,5 @@
 'use client'
-import { useState, FormEvent, use } from 'react'
+import { useState, use, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import Link from 'next/link'

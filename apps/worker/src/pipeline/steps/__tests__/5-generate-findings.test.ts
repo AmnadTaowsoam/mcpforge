@@ -16,6 +16,8 @@ function makeCtx(server: string, tests = '// tests'): StepContext {
     tests,
     dockerFile: 'FROM node',
     manifest: JSON.stringify({ name: 'X', version: '1.0.0', mcpVersion: '1.0', tools: [] }),
+    packageJson: '{"name":"x"}',
+    tsconfig: '{}',
   }
   return {
     job: { updateProgress: vi.fn() } as unknown as StepContext['job'],

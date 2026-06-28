@@ -11,6 +11,8 @@ const program = new Command()
   .description('MCPForge CLI — generate production-grade MCP servers')
   .version('0.1.0')
 
+// `create` is a common alias for `generate` (mirrors `npm create`, `cargo new`, etc.)
+generateCommand.alias('create')
 program.addCommand(generateCommand)
 program.addCommand(validateCommand)
 program.addCommand(listTemplatesCommand)

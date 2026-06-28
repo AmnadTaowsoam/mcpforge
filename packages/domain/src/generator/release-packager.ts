@@ -42,6 +42,9 @@ export function packageRelease(
         entry('Dockerfile', rendered.dockerFile),
         entry('mcp.manifest.json', rendered.manifest),
         entry('openapi.json', contractJson),
+        entry('pyproject.toml', rendered.packageJson),
+        // requirements.txt for pip compatibility alongside pyproject.toml
+        entry('requirements.txt', 'mcp>=1.0.0\n'),
       ]
     : [
         entry('src/index.ts', rendered.server),
@@ -50,6 +53,8 @@ export function packageRelease(
         entry('Dockerfile', rendered.dockerFile),
         entry('mcp.manifest.json', rendered.manifest),
         entry('openapi.json', contractJson),
+        entry('package.json', rendered.packageJson),
+        ...(rendered.tsconfig ? [entry('tsconfig.json', rendered.tsconfig)] : []),
       ]
 
   return {

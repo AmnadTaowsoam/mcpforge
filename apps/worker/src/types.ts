@@ -56,6 +56,8 @@ export interface CoreWorkflowOutput {
   tests: string
   dockerFile: string
   manifest: string
+  packageJson: string
+  tsconfig: string
 }
 
 export interface PackagedArtifact {

@@ -1,5 +1,5 @@
 'use client'
-import { useState, FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { api, type Run } from '../../../../lib/api'
 import { useAuthStore } from '../../../../store/auth'

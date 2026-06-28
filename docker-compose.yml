@@ -67,8 +67,8 @@ services:
       OBJECT_STORAGE_SECRET_KEY: minioadmin
       AI_PROVIDER: mock
       AI_MODEL: mock
-      JWT_SECRET: ${JWT_SECRET:-change-me-docker-dev-only}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-change-me-32-byte-docker-dev--}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env (min 32 chars)}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?ENCRYPTION_KEY must be set in .env (min 32 chars)}
       LOG_LEVEL: info
     depends_on:
       postgres:

@@ -11,6 +11,12 @@ const tokenBodySchema = z.object({
   workspaceId: z.string().min(1),
 })
 
+const loginBodySchema = z.object({
+  email: z.string().email(),
+  password: z.string().optional(),
+  workspaceId: z.string().optional(),
+})
+
 export async function authRoutes(app: FastifyInstance): Promise<void> {
   app.post<{ Body: z.infer<typeof tokenBodySchema> }>('/token', async (request, reply) => {
     const parse = tokenBodySchema.safeParse(request.body)
@@ -65,6 +71,58 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       { expiresIn: '24h' },
     )
 
+    return reply.code(200).send({ token, expiresIn: 86_400, userId, workspaceId })
+  })
+
+  // /login — web UI endpoint: accepts email+password (password ignored in mock mode).
+  // workspaceId is optional; falls back to DB lookup or 'default'.
+  app.post<{ Body: z.infer<typeof loginBodySchema> }>('/login', async (request, reply) => {
+    const parse = loginBodySchema.safeParse(request.body)
+    if (!parse.success) {
+      const detail = parse.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')
+      return sendProblem(reply, new BadRequestError(detail), request.url)
+    }
+
+    const { email, workspaceId: providedWsid } = parse.data
+    let userId: string
+    let userRole: string
+    let workspaceId: string
+
+    if (isMockMode()) {
+      try {
+        // Try to find the user; pick the first workspace they belong to.
+        const wsid = providedWsid ?? 'default'
+        const user = await getUserByEmailInWorkspace(getDb(), wsid, email)
+        if (user) {
+          userId = user.id
+          userRole = user.role
+          workspaceId = wsid
+          await touchLastSeen(getDb(), user.id)
+        } else {
+          userId = `mock-${email.split('@')[0] ?? 'user'}`
+          userRole = 'owner'
+          workspaceId = wsid
+        }
+      } catch {
+        userId = `mock-${email.split('@')[0] ?? 'user'}`
+        userRole = 'owner'
+        workspaceId = providedWsid ?? 'default'
+      }
+      app.log.warn({ email, workspaceId }, 'Mock /login token issued — not for production use')
+    } else {
+      // Production: password validation required — out of scope for initial release.
+      // Replace with bcrypt.compare(password, user.passwordHash) when implementing full auth.
+      return sendProblem(
+        reply,
+        new BadRequestError('Use /auth/token with workspaceId in production mode'),
+        request.url,
+      )
+    }
+
+    const token = await reply.jwtSign(
+      { sub: userId, wsid: workspaceId, role: userRole },
+      { expiresIn: '24h' },
+    )
     return reply.code(200).send({ token, expiresIn: 86_400, userId, workspaceId })
   })
 

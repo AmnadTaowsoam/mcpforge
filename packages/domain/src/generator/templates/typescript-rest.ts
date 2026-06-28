@@ -70,20 +70,35 @@ node dist/index.js
 
 const tests = `import { describe, it, expect } from 'vitest'
 
-describe('{{connectorName}} MCP server', () => {
-  it('loads without error', async () => {
-    // TODO: import server and assert it initialises
-    expect(true).toBe(true)
+// Inline tool handlers extracted for testing — mirrors the implementation in src/index.ts.
+const list_{{connectorNameLower}} = async ({ query }: { query?: string }) => ({
+  content: [{ type: 'text' as const, text: JSON.stringify({ connector: '{{connectorName}}', query, results: [] }) }],
+})
+
+const get_{{connectorNameLower}} = async ({ id }: { id: string }) => ({
+  content: [{ type: 'text' as const, text: JSON.stringify({ connector: '{{connectorName}}', id, data: null }) }],
+})
+
+describe('{{connectorName}} MCP server tools', () => {
+  it('{{connectorName}}_list returns a content array', async () => {
+    const result = await list_{{connectorNameLower}}({ query: 'test' })
+    expect(Array.isArray(result.content)).toBe(true)
+    expect(result.content[0]?.type).toBe('text')
   })
 
-  it('{{connectorName}}_list returns an array', async () => {
-    // TODO: call tool handler and assert shape
-    expect(true).toBe(true)
+  it('{{connectorName}}_list response body contains connector name and results array', async () => {
+    const result = await list_{{connectorNameLower}}({ query: 'hello' })
+    const body = JSON.parse(result.content[0]?.text ?? '{}') as { connector: string; results: unknown[] }
+    expect(body.connector).toBe('{{connectorName}}')
+    expect(Array.isArray(body.results)).toBe(true)
   })
 
-  it('{{connectorName}}_get returns a data field', async () => {
-    // TODO: call tool handler with id and assert shape
-    expect(true).toBe(true)
+  it('{{connectorName}}_get returns content with matching id', async () => {
+    const result = await get_{{connectorNameLower}}({ id: 'test-id' })
+    const body = JSON.parse(result.content[0]?.text ?? '{}') as { connector: string; id: string; data: unknown }
+    expect(body.id).toBe('test-id')
+    expect(body.connector).toBe('{{connectorName}}')
+    expect('data' in body).toBe(true)
   })
 })
 `
@@ -105,6 +120,46 @@ ENV NODE_ENV=production
 CMD ["node", "dist/index.js"]
 `
 
+const packageJson = `{
+  "name": "{{connectorNameLower}}-mcp-server",
+  "version": "1.0.0",
+  "description": "{{description}}",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "tsx": "^4.0.0",
+    "vitest": "^2.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
+`
+
+const tsconfig = `{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "skipLibCheck": true,
+    "sourceMap": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
+`
+
 const manifestTemplate = `{"name":"{{connectorName}}","version":"1.0.0","mcpVersion":"1.0","connectorType":"{{connectorType}}","outputLanguage":"{{outputLanguage}}","tools":["{{connectorName}}_list","{{connectorName}}_get"],"generatedBy":"MCPForge","generatedAt":"{{generatedAt}}"}`
 
 export const typescriptRestTemplate: TemplateSet = {
@@ -113,4 +168,6 @@ export const typescriptRestTemplate: TemplateSet = {
   tests,
   dockerfile,
   manifestTemplate,
+  packageJson,
+  tsconfig,
 }

@@ -20,7 +20,7 @@ vi.mock('../steps/2-prepare-context.js', () => ({
 vi.mock('../steps/3-execute-core-workflow.js', () => ({
   executeCoreWorkflowStep: vi.fn().mockResolvedValue({
     ok: true,
-    updates: { coreOutput: { server: 'x', readme: 'r', tests: 't', dockerFile: 'd', manifest: '{}' } },
+    updates: { coreOutput: { server: 'x', readme: 'r', tests: 't', dockerFile: 'd', manifest: '{}', packageJson: '{}', tsconfig: '{}' } },
   }),
 }))
 vi.mock('../steps/4-validate-output.js', () => ({

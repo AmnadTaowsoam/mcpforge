@@ -45,7 +45,7 @@ describe('executeCoreWorkflowStep', () => {
     expect(r.ok).toBe(true)
   })
 
-  it('coreOutput contains all required fields', async () => {
+  it('coreOutput contains all required fields including packageJson and tsconfig', async () => {
     const r = await executeCoreWorkflowStep(makeCtx(CTX_STATE))
     if (!r.ok) return
     const out = r.updates?.coreOutput
@@ -54,6 +54,8 @@ describe('executeCoreWorkflowStep', () => {
     expect(out?.tests).toBeTruthy()
     expect(out?.dockerFile).toBeTruthy()
     expect(out?.manifest).toBeTruthy()
+    expect(out?.packageJson).toBeTruthy()
+    expect(out?.tsconfig).toBeTruthy()
   })
 
   it('generated manifest is valid', async () => {

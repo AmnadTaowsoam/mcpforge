@@ -34,6 +34,8 @@ export async function executeCoreWorkflowStep(ctx: StepContext): Promise<StepRes
     tests: rendered.tests,
     dockerFile: rendered.dockerFile,
     manifest: rendered.manifest,
+    packageJson: rendered.packageJson,
+    tsconfig: rendered.tsconfig,
   }
 
   ctx.log.info(
