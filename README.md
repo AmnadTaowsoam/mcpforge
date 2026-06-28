@@ -1,40 +1,46 @@
 ﻿# MCPForge
 
-Create production-ready MCP server templates from a single command or guided setup flow.
+MCP server generation product foundation with enterprise-grade frontend expectations and production-shaped backend documentation.
 
-## Product Position
+## What This Repo Should Become
 
-MCPForge is a **MCP Server Generator** in the Cerebra Forge Labs / ForgeOps Labs public product set. It is designed as a public, useful tool while Cerebra MCP remains the orchestration and governance factory behind the scenes.
+MCPForge is designed to be cloned, started, and extended into a real product. The documentation now defines the complete target implementation: premium UI, backend modules, data model, API, jobs, environment, testing, and release gates.
 
-## Why This Project Matters
+## Clone-And-Run Target
 
-It uses Cerebra MCP as the factory behind the scenes to create other MCP-capable projects. This makes it the most direct proof of Cerebra's value.
+~~~bash
+git clone https://github.com/AmnadTaowsoam/mcpforge.git
+cd mcpforge
+cp .env.example .env
+pnpm install
+pnpm dev
+~~~
 
-The goal is not to publish a shallow demo. The repository should become a buildable product foundation with clear requirements, delivery gates, and enough implementation detail for a developer or AI coding agent to start from zero and ship a usable MVP.
+Primary command:
 
-## Target Users
-
-MCP builders, AI platform engineers, internal tooling teams, agent framework users, Codex/Cursor/Claude Desktop power users
-
-## Core Workflow
-
-1. Capture the user's intent and required inputs.
-2. Validate the inputs against the product-specific quality bar.
-3. Generate or inspect the target artifact.
-4. Show findings, assumptions, risks, and next actions.
-5. Export or hand off the result in a format that is useful outside the app.
+~~~bash
+pnpm create mcpforge shopee-connector
+~~~
 
 ## Documentation
 
 - [Project brief](docs/brief.md)
 - [Requirements](docs/requirements.md)
+- [Enterprise frontend spec](docs/frontend-enterprise.md)
+- [Backend implementation spec](docs/backend-implementation.md)
+- [Clone-and-run quickstart](docs/quickstart.md)
+- [Environment and configuration](docs/environment.md)
+- [Testing and quality plan](docs/testing-and-quality.md)
 - [Architecture](docs/architecture.md)
 - [Roadmap](docs/roadmap.md)
 - [Delivery checklist](docs/delivery-checklist.md)
 
-## Recommended First Build
+## Implementation Standard
 
-Build one complete happy path first, then add integrations and automation. The MVP should prove that MCPForge can deliver its core output reliably before broadening scope.
+- Frontend: enterprise, premium, luxury-grade UX where applicable.
+- Backend: full workflow, API, jobs, persistence, audit, security, exports.
+- Local dev: mock mode must work without paid external services.
+- Release: tests, visual QA, security checks, and clone-and-run proof.
 
 ## License
 
