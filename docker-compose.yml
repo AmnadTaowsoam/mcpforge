@@ -1,0 +1,124 @@
+name: mcpforge
+
+services:
+  # ─── Infrastructure ─────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mcpforge
+    ports:
+      - "5432:5432"
+    volumes:
+      - .docker-data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - .docker-data/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    # LOCAL DEV ONLY — minioadmin is the well-known MinIO default.
+    # Set MINIO_ROOT_USER/PASSWORD from .env for staging/production.
+    environment:
+      MINIO_ROOT_USER: ${OBJECT_STORAGE_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${OBJECT_STORAGE_SECRET_KEY:-minioadmin}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - .docker-data/minio:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ─── Application ────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: infra/docker/api.Dockerfile
+    ports:
+      - "4300:4300"
+    environment:
+      NODE_ENV: production
+      PORT: 4300
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mcpforge
+      REDIS_URL: redis://redis:6379
+      OBJECT_STORAGE_ENDPOINT: http://minio:9000
+      OBJECT_STORAGE_BUCKET: mcpforge-artifacts
+      OBJECT_STORAGE_ACCESS_KEY: minioadmin
+      OBJECT_STORAGE_SECRET_KEY: minioadmin
+      AI_PROVIDER: mock
+      AI_MODEL: mock
+      JWT_SECRET: ${JWT_SECRET:-change-me-docker-dev-only}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-change-me-32-byte-docker-dev--}
+      LOG_LEVEL: info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4300/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  worker:
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mcpforge
+      REDIS_URL: redis://redis:6379
+      OBJECT_STORAGE_ENDPOINT: http://minio:9000
+      OBJECT_STORAGE_BUCKET: mcpforge-artifacts
+      OBJECT_STORAGE_ACCESS_KEY: minioadmin
+      OBJECT_STORAGE_SECRET_KEY: minioadmin
+      AI_PROVIDER: mock
+      AI_MODEL: mock
+      LOG_LEVEL: info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: infra/docker/web.Dockerfile
+    ports:
+      - "4301:4301"
+    environment:
+      NODE_ENV: production
+      PORT: 4301
+      NEXT_PUBLIC_API_URL: http://api:4300
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4301 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

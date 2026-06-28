@@ -1,8 +1,47 @@
-﻿node_modules/
+# ─── Internal — never publish ─────────────────────────────────────────────────
+CEREBRA_MODE_A_HANDOFF.md
+
+# ─── Dependencies ─────────────────────────────────────────────────────────────
+node_modules/
+.pnpm-store/
+
+# ─── Build outputs ────────────────────────────────────────────────────────────
 dist/
+.next/
+.turbo/
+out/
 build/
+
+# ─── Test artifacts ───────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+.visual-regression/
+
+# ─── Environment (NEVER commit .env — only .env.example is safe to commit) ───
 .env
 .env.*
-.DS_Store
-*.log
+!.env.example
 
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── OS / Editor ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# ─── Database ─────────────────────────────────────────────────────────────────
+*.sqlite
+*.db
+
+# ─── Docker local volumes ─────────────────────────────────────────────────────
+.docker-data/
+
+# ─── Golden test temp ─────────────────────────────────────────────────────────
+examples/expected-output/.tmp/

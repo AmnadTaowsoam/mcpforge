@@ -1,0 +1,27 @@
+{
+  "name": "@mcpforge/cli",
+  "version": "0.1.0",
+  "description": "MCPForge CLI — generate production-grade MCP servers from the command line",
+  "type": "module",
+  "bin": {
+    "mcpforge": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@mcpforge/domain": "workspace:*",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "eslint": "^9.15.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

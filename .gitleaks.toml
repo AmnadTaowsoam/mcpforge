@@ -1,0 +1,50 @@
+# Gitleaks configuration for MCPForge
+# Docs: https://github.com/gitleaks/gitleaks
+
+title = "MCPForge secret scan"
+
+[extend]
+# Use the built-in gitleaks ruleset as the base
+useDefault = true
+
+# ─── Allowlists — known-safe patterns that match secret regexes ──────────────
+
+[[allowlists]]
+description = "Test/mock credentials in test helper files"
+paths = [
+  "apps/api/src/__tests__/.*",
+  "packages/config/src/.*\\.test\\.ts",
+  "apps/worker/src/.*\\.test\\.ts",
+]
+regexes = [
+  "test-secret-",
+  "test-encryption-key-",
+  "test-encrypt-minimum-",
+]
+
+[[allowlists]]
+description = "CI YAML — clearly labeled non-production test values"
+paths = ["\\.github/workflows/.*\\.yml"]
+regexes = [
+  "ci-test-secret-not-for-production",
+  "e2e-jwt-secret-not-for-production-use",
+  "e2e-encryption-32-chars-long-key",
+]
+
+[[allowlists]]
+description = "Docker Compose — MinIO well-known local dev default"
+paths = ["docker-compose\\.yml"]
+regexes = ["minioadmin"]
+
+[[allowlists]]
+description = "env.example — placeholder values only"
+paths = ["\\.env\\.example"]
+regexes = [
+  "change-me-generate-a-real-",
+  "minioadmin",
+]
+
+[[allowlists]]
+description = "CI security scanner script (the grep pattern itself)"
+paths = ["\\.github/workflows/ci\\.yml"]
+regexes = ["grep -rE"]
