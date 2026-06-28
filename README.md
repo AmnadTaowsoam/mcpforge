@@ -1,58 +1,40 @@
 ﻿# MCPForge
 
-Build, validate, and publish production-grade MCP servers from a guided workspace.
+Create production-ready MCP server templates from a single command or guided setup flow.
 
-## Why this exists
+## Product Position
 
-Teams are adopting AI tools faster than their delivery process, governance model, and validation habits can keep up. MCPForge is a focused MCP server builder that turns that messy middle into an explicit product workflow: define the job, connect the required tools, verify the output, and leave behind delivery evidence that another human can trust.
+MCPForge is a **MCP Server Generator** in the Cerebra Forge Labs / ForgeOps Labs public product set. It is designed as a public, useful tool while Cerebra MCP remains the orchestration and governance factory behind the scenes.
 
-This repository currently contains the product brief and implementation requirements needed to build the first production-ready version from scratch. It is intentionally practical: scope, workflows, architecture, data model, API surface, security expectations, rollout plan, and acceptance criteria are all documented.
+## Why This Project Matters
 
-## Target users
+It uses Cerebra MCP as the factory behind the scenes to create other MCP-capable projects. This makes it the most direct proof of Cerebra's value.
 
-- AI platform engineers, developer-tool teams, internal automation owners
-- Teams that want a usable internal product, not only a demo
-- Builders who need clear requirements before starting implementation
+The goal is not to publish a shallow demo. The repository should become a buildable product foundation with clear requirements, delivery gates, and enough implementation detail for a developer or AI coding agent to start from zero and ship a usable MVP.
 
-## MVP outcome
+## Target Users
 
-The first release should let a user complete the core workflow end to end:
+MCP builders, AI platform engineers, internal tooling teams, agent framework users, Codex/Cursor/Claude Desktop power users
 
-1. Create or import the primary work item for MCPForge.
-2. Configure the required inputs, policies, and integrations.
-3. Run the workflow in a controlled, observable way.
-4. Review generated output, risks, and validation evidence.
-5. Export or hand off the result to the next delivery system.
+## Core Workflow
 
-## Repository contents
+1. Capture the user's intent and required inputs.
+2. Validate the inputs against the product-specific quality bar.
+3. Generate or inspect the target artifact.
+4. Show findings, assumptions, risks, and next actions.
+5. Export or hand off the result in a format that is useful outside the app.
 
-- [Project brief](docs/brief.md) - product direction, audience, positioning, and success metrics.
-- [Requirements](docs/requirements.md) - build-ready functional, non-functional, security, data, and delivery requirements.
-- [Architecture](docs/architecture.md) - suggested system design and component boundaries.
-- [Roadmap](docs/roadmap.md) - staged path from prototype to production.
-- [Delivery checklist](docs/delivery-checklist.md) - release gates and operational readiness checks.
+## Documentation
 
-## Suggested implementation stack
+- [Project brief](docs/brief.md)
+- [Requirements](docs/requirements.md)
+- [Architecture](docs/architecture.md)
+- [Roadmap](docs/roadmap.md)
+- [Delivery checklist](docs/delivery-checklist.md)
 
-- Frontend: Next.js or React with TypeScript
-- Backend: Node.js/NestJS or FastAPI
-- Database: Postgres
-- Background jobs: BullMQ, Celery, or cloud-native queues
-- Auth: OAuth plus role-based access control
-- AI layer: provider-agnostic service wrapper with logging, evaluation hooks, and policy checks
-- Observability: structured logs, traces, audit events, and product analytics
+## Recommended First Build
 
-## Build principles
-
-- Start with one complete workflow before adding broad feature coverage.
-- Keep human approval in the loop for risky or outward-facing actions.
-- Treat generated AI output as draft until verified by rules, tests, or a reviewer.
-- Store decisions, source inputs, and delivery evidence alongside the final output.
-- Make permissions explicit and auditable from the first release.
-
-## Current status
-
-Planning package. The repo is ready for implementation planning, issue creation, design review, and MVP build kickoff.
+Build one complete happy path first, then add integrations and automation. The MVP should prove that MCPForge can deliver its core output reliably before broadening scope.
 
 ## License
 
