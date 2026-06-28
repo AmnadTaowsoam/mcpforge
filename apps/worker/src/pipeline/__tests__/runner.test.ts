@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { Job } from 'bullmq'
-import type { Logger } from 'pino'
+import pino from 'pino'
 import type { Env } from '@mcpforge/config'
 import { WorkerError } from '../../types.js'
 
@@ -60,16 +60,16 @@ function makeJob(): Job {
   } as unknown as Job
 }
 
-const LOG = {
-  info: vi.fn(), warn: vi.fn(), error: vi.fn(),
-  child: vi.fn().mockReturnThis(),
-} as unknown as Logger
+// Use a real pino logger at silent level — avoids type-parameter mismatches with pino v9
+const LOG = pino({ level: 'silent' })
 
 const ENV = {} as Env
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(LOG.child).mockReturnValue(LOG)
+  // pino v9: child() return type has an index signature that Logger<never,boolean> lacks — safe to cast here
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  vi.spyOn(LOG, 'child').mockReturnValue(LOG as any)
 })
 
 describe('runPipeline — happy path', () => {
